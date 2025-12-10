@@ -1,36 +1,50 @@
-LIB=elefunt
-FFLAGS=-O
-OBJ = \
-	asin.o	\
-	atan.o	\
-	dasin.o	\
-	datan.o	\
-	dexp.o	\
-	dlog.o	\
-	dmachar.o	\
-	dpower.o	\
-	dsin.o	\
-	dsinh.o	\
-	dsqrt.o	\
-	dtan.o	\
-	dtanh.o	\
-	exp.o	\
-	machar.o	\
-	power.o	\
-	sin.o	\
-	sinh.o	\
-	sqrt.o	\
-	tan.o	\
-	tanh.o	\
-	alog.o
-lib$(LIB).a:	$(OBJ)
-	ar ru lib$(LIB).a $?
-	ranlib lib$(LIB).a
+# ELEFUNT - Elementary Function Testing
+# Root Makefile for building and running Fortran and Go versions
 
-install:	lib$(LIB).a
-	ln -s /netlib/netlib/elefunt/lib$(LIB).a /usr/local/lib
-	rm *.o
+SUBDIRS = fortran go
 
-test: test.o
-	f77 test.o -l$(LIB)
-	time a.out
+.PHONY: all build test clean fortran go
+
+# Build both Fortran and Go versions
+all: build
+
+build: build-fortran build-go
+
+build-fortran:
+	@echo "========================================"
+	@echo "Building Fortran version"
+	@echo "========================================"
+	$(MAKE) -C fortran all
+
+build-go:
+	@echo "========================================"
+	@echo "Building Go version"
+	@echo "========================================"
+	$(MAKE) -C go build
+
+# Run all tests (Fortran then Go)
+test: test-fortran test-go
+
+test-fortran: build-fortran
+	@echo "========================================"
+	@echo "Running Fortran tests"
+	@echo "========================================"
+	$(MAKE) -C fortran test
+
+test-go: build-go
+	@echo "========================================"
+	@echo "Running Go tests"
+	@echo "========================================"
+	$(MAKE) -C go test
+
+# Clean both
+clean:
+	$(MAKE) -C fortran clean
+	$(MAKE) -C go clean
+
+# Individual subdirectory targets
+fortran:
+	$(MAKE) -C fortran
+
+go:
+	$(MAKE) -C go
