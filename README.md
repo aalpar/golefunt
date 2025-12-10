@@ -50,6 +50,10 @@ elefunt/
 └── Makefile
 ```
 
+## References
+
+See [BIBLIOGRAPHY.md](BIBLIOGRAPHY.md) for full citations and references.
+
 ## Attribution
 
 ### Original Fortran Code
